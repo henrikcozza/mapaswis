@@ -34,6 +34,10 @@ def get_number_from_name(name: str) -> int:
         return 10  # change!
     elif name == "true_node":
         return 11
+    elif name == "lilith":
+        return 12
+    elif name == "chiron":
+        return 13
     else:
         return int(name)
 

@@ -22,6 +22,8 @@ def print_all_data(user: KrInstance) -> None:
     output += (f"Uranus:    {user.uranus['sign']} {round(user.uranus['position'], 3)} in {user.uranus['house']}\n")
     output += (f"Neptune:   {user.neptune['sign']} {round(user.neptune['position'], 3)} in {user.neptune['house']}\n")
     output += (f"Pluto:     {user.pluto['sign']} {round(user.pluto['position'], 3)} in {user.pluto['house']}\n")
+    output += (f"Lilith:     {user.lilith['sign']} {round(user.lilith['position'], 3)} in {user.lilith['house']}\n")
+    output += (f"Chiron:     {user.chiron['sign']} {round(user.chiron['position'], 3)} in {user.chiron['house']}\n")
     #output += (f"Juno:      {p[10]['sign']} {round(p[10]['pos'], 3)} in {p[10]['house']}\n\n")
     output += ("\nPLACIDUS HOUSES\n")
     output += (f"House Cusp 1:     {user.first_house['sign']}  {round(user.first_house['position'], 3)}\n")

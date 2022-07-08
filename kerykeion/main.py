@@ -3,10 +3,11 @@
 """
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import math
 import pytz
 import swisseph as swe
+
 
 from datetime import datetime
 from logging import Logger, getLogger, basicConfig
@@ -28,7 +29,6 @@ class KrInstance():
     """
     Calculates all the astrological information, the coordinates,
     it's utc and julian day and returns an object with all that data.
-
     Args:
     - name (str, optional): _ Defaults to "Now".
     - year (int, optional): _ Defaults to now.year.
@@ -61,6 +61,7 @@ class KrInstance():
     geonames_username: str
     online: bool
     zodiac_type: ZodiacType
+    ephemered_file_folder: str
     __logger: Logger
 
     # Generated internally
@@ -85,6 +86,7 @@ class KrInstance():
         logger: Union[Logger, None] = None,
         geonames_username: str = 'century.boy',
         zodiac_type: ZodiacType = "Tropic",
+        ephemered_file_folder: str = 'default',
         online: bool = True,
     ) -> None:
 
@@ -105,8 +107,12 @@ class KrInstance():
         self.tz_str = tz_str
         self.__geonames_username = geonames_username
         self.zodiac_type = zodiac_type
+        self.ephemered_file_folder = ephemered_file_folder
         self.online = online
         self.json_dir = Path.home()
+
+        #set ephemered file folder
+        if self.ephemered_file_folder != 'default': swe.set_ephe_path(self.ephemered_file_folder)
 
         if (not self.online) and (not lng or not lat or not tz_str):
             raise KerykeionException(
@@ -277,7 +283,8 @@ class KrInstance():
         pluto_deg = swe.calc(self.julian_day, 9, self.__iflag)[0][0]
         mean_node_deg = swe.calc(self.julian_day, 10, self.__iflag)[0][0]
         true_node_deg = swe.calc(self.julian_day, 11, self.__iflag)[0][0]
-
+        lilith_deg = swe.calc(self.julian_day, 12, self.__iflag)[0][0]
+        chiron_deg = swe.calc(self.julian_day, 15, self.__iflag)[0][0]
         # print(swe.calc(self.julian_day, 7, self.__iflag)[3])
 
         self.planets_degrees = [
@@ -292,7 +299,9 @@ class KrInstance():
             neptune_deg,
             pluto_deg,
             mean_node_deg,
-            true_node_deg
+            true_node_deg,
+            lilith_deg,
+            chiron_deg
         ]
 
         return self.planets_degrees
@@ -338,6 +347,12 @@ class KrInstance():
         )
         self.true_node = calculate_position(
             self.planets_degrees[11], "True_Node", point_type=point_type
+        )
+        self.lilith = calculate_position(
+            self.planets_degrees[12], "Lilith", point_type=point_type
+        )
+        self.chiron = calculate_position(
+            self.planets_degrees[13], "Chiron", point_type=point_type
         )
 
     def __planets_in_houses(self):
@@ -437,6 +452,12 @@ class KrInstance():
         self.true_node = for_every_planet(
             self.true_node, self.planets_degrees[11]
         )
+        self.lilith = for_every_planet(
+            self.lilith, self.planets_degrees[12]
+        )
+        self.chiron = for_every_planet(
+            self.chiron, self.planets_degrees[13]
+        )
 
         planets_list = [
             self.sun,
@@ -450,7 +471,9 @@ class KrInstance():
             self.neptune,
             self.pluto,
             self.mean_node,
-            self.true_node
+            self.true_node,
+            self.lilith,
+            self.chiron
         ]
 
         # Check in retrograde or not:
@@ -536,7 +559,7 @@ class KrInstance():
         """ Internal function to generate the lists"""
         self.planets_list = [self.sun, self.moon, self.mercury, self.venus,
                              self.mars, self.jupiter, self.saturn, self.uranus, self.neptune,
-                             self.pluto, self.mean_node, self.true_node]
+                             self.pluto, self.mean_node, self.true_node, self.lilith, self.chiron]
 
         self.houses_list = [self.first_house, self.second_house, self.third_house,
                             self.fourth_house, self.fifth_house, self.sixth_house, self.seventh_house,
