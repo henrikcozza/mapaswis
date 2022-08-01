@@ -38,6 +38,8 @@ def get_number_from_name(name: str) -> int:
         return 12
     elif name == "chiron":
         return 13
+    elif name == "lot of fortune":
+        return 14
     else:
         return int(name)
 
@@ -112,6 +114,24 @@ def calculate_position(degree: Union[int, float], number_name: str,  point_type:
 
     return KerykeionPoint(**dictionary)
 
+def get_sign_from_number(number: int) -> str:
+
+    sign = [
+        ("Ari","Fire","Cardinal"),
+        ("Tau","Earth","Fixed"),
+        ("Gem","Air","Mutable"),
+        ("Can","Water","Cardinal"),
+        ("Leo","Fire","Fixed"),
+        ("Vir","Earth","Mutable"),
+        ("Lib","Air","Cardinal"),
+        ("Sco","Water","Fixed"),
+        ("Sag","Fire","Mutable"),
+        ("Cap","Earth","Cardinal"),
+        ("Aqu","Air", "Fixed"),
+        ("Pis","Water","Mutable"),
+    ]
+
+    return sign[number]
 
 def dangerous_json_dump(subject, dump=True, new_output_directory=None):
     """

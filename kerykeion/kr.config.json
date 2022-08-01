@@ -40,7 +40,8 @@
         "North_Node": "North Node",
         "Mean_Node": "Mean Node",
         "Lilith": "Lilith",
-        "Chiron": "Chiron"
+        "Chiron": "Chiron",
+        "Lot_of_Fortune": "Lot of Fortune"
       }
     },
 
@@ -82,9 +83,10 @@
         "Dsc": "Dsc",
         "Ic": "Ic",
         "North_Node": "Nodo Norte",
-        "Mean_Node": "Nodo Médio",
+        "Mean_Node": "Cab. do dragão",
         "Lilith": "Lilith",
-        "Chiron": "Quiron"
+        "Chiron": "Quiron",
+        "Lot of Fortune": "Roda da Fortuna"
       }
     },
 
@@ -128,7 +130,8 @@
         "North_Node": "Nodo Nord",
         "Mean_Node": "Mean Node",
         "Lilith": "Lilith",
-        "Chiron": "Quiron"
+        "Chiron": "Quiron",
+        "Lot of Fortune": "Lot"
       }
     }
   },
@@ -169,17 +172,17 @@
     "zodiac_transit_ring_3": "#0000ff",
     "houses_radix_line": "#ff0000",
     "houses_transit_line": "#0000ff",
-    "aspect_0": "#5757e2",
+    "aspect_0": "#55eaf5",
     "aspect_30": "#810757",
     "aspect_45": "#b14e58",
-    "aspect_60": "#d59e28",
+    "aspect_60": "#55eaf5",
     "aspect_72": "#1f99b3",
-    "aspect_90": "#dc0000",
-    "aspect_120": "#36d100",
+    "aspect_90": "#ff0c0c",
+    "aspect_120": "#55eaf5",
     "aspect_135": "#985a10",
     "aspect_144": "#7a9810",
     "aspect_150": "#26bbcf",
-    "aspect_180": "#510060",
+    "aspect_180": "#ff0c0c",
     "planet_0": "#984b00",
     "planet_1": "#150052",
     "planet_2": "#520800",
@@ -198,6 +201,7 @@
     "planet_15": "#000000",
     "planet_16": "#FFFFFF",
     "planet_17": "#AAAFFF",
+    "planet_18": "#AAAFFF",
     "lunar_phase_0": "#000000",
     "lunar_phase_1": "#FFFFFF",
     "lunar_phase_2": "#CCCCCC"
@@ -208,8 +212,8 @@
       "degree": 0,
       "name": "conjunction",
       "visible": 1,
-      "visible_grid": 1,
-      "is_major": 1,
+      "visible_grid": 0,
+      "is_major": 0,
       "is_minor": 0,
       "orb": 10
     },
@@ -235,7 +239,7 @@
       "degree": 60,
       "name": "sextile",
       "visible": 1,
-      "visible_grid": 1,
+      "visible_grid": 0,
       "is_major": 1,
       "is_minor": 0,
       "orb": 6
@@ -243,8 +247,8 @@
     {
       "degree": 72,
       "name": "quintile",
-      "visible": 1,
-      "visible_grid": 1,
+      "visible": 0,
+      "visible_grid": 0,
       "is_major": 0,
       "is_minor": 1,
       "orb": 1
@@ -410,7 +414,7 @@
       "id": 10,
       "name": "Mean_Node",
       "color": "#4c1541",
-      "visible": 1,
+      "visible": 0,
       "element_points": 20,
       "zodiac_relation": "-1",
       "label": "North_Node",
@@ -420,7 +424,7 @@
       "id": 11,
       "name": "Mean_Node",
       "color": "#4c1541",
-      "visible": 0,
+      "visible": 1,
       "element_points": 0,
       "zodiac_relation": "-1",
       "label": "Mean_Node",
@@ -448,6 +452,16 @@
     },
     {
       "id": 14,
+      "name": "Lot_of_Fortune",
+      "color": "#000000",
+      "visible": 1,
+      "element_points": 0,
+      "zodiac_relation": "0",
+      "label": "Lot of Fortune",
+      "label_short": "Lot"
+    },
+    {
+      "id": 15,
       "name": "First House",
       "color": "orange",
       "visible": 1,
@@ -457,7 +471,7 @@
       "label_short": "Asc"
     },
     {
-      "id": 15,
+      "id": 16,
       "name": "Tenth House",
       "color": "#FF0000",
       "visible": 1,
@@ -467,7 +481,7 @@
       "label_short": "Mc"
     },
     {
-      "id": 16,
+      "id": 17,
       "name": "Seventh House",
       "color": "#0000FF",
       "visible": 0,
@@ -477,7 +491,7 @@
       "label_short": "Dsc"
     },
     {
-      "id": 17,
+      "id": 18,
       "name": "Fourth House",
       "color": "#000000",
       "visible": 0,
@@ -486,6 +500,7 @@
       "label": "Ic",
       "label_short": "Ic"
     }
+   
   ],
 
   "axes_orbit": 1

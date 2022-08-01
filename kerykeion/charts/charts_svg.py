@@ -87,7 +87,7 @@ class MakeSvgInstance:
         self.points_deg_ut = self.user.planets_degrees + [self.user.houses_degree_ut[0],
                                                           self.user.houses_degree_ut[9], self.user.houses_degree_ut[6],
                                                           self.user.houses_degree_ut[3]]
-
+        
         # Make a list of the relative degrees of the points in the graphic.
 
         self.points_deg = []
@@ -139,7 +139,8 @@ class MakeSvgInstance:
             natal_aspects_instance = NatalAspects(
                 self.user, new_settings_file=self.settings_file)
             self.aspects_list = natal_aspects_instance.get_relevant_aspects()
-
+        
+        
         if (self.chart_type == "Transit" or self.chart_type == "Composite"):  # TODO: If not second should exit
 
             if not second_obj:
@@ -396,6 +397,7 @@ class MakeSvgInstance:
         offset = (int(self.houses_degree_ut[6]) / -1) + int(degB)
         x2 = self.__sliceToX(0, ar, offset) + (r-ar)
         y2 = self.__sliceToY(0, ar, offset) + (r-ar)
+        
         out = '            <line x1="'+str(x1)+'" y1="'+str(y1)+'" x2="'+str(x2)+'" y2="'+str(
             y2)+'" style="stroke: '+color+'; stroke-width: 1; stroke-opacity: .9;"/>'
         return out
@@ -534,6 +536,8 @@ class MakeSvgInstance:
                 0, (r-dropin), text_offset) + dropin  # was 132
             ytext = self.__sliceToY(
                 0, (r-dropin), text_offset) + dropin  # was 132
+                
+            # generate lines to divisions of the houses
             path = path + '<line x1="'+str(x1)+'" y1="'+str(y1)+'" x2="'+str(x2)+'" y2="'+str(
                 y2)+'" style="stroke: '+linecolor+'; stroke-width: 2px; stroke-dasharray:3,2; stroke-opacity:.4;"/>'
             path = path + '<text style="fill: #f00; fill-opacity: .6; font-size: 14px"><tspan x="' + \
@@ -543,7 +547,9 @@ class MakeSvgInstance:
         return path
 
     def __makePlanets(self, r):
-
+        """Desenha planetas no ceu do mapa
+        calcula elementos
+        """
         planets_degut = {}
 
         diff = range(len(self.planets_settings))
@@ -706,6 +712,7 @@ class MakeSvgInstance:
                     rplanet = 130
                     switch = 1
             else:
+                #chart_type Natal
                 # if 22 < i < 27 it is asc,mc,dsc,ic (angles of chart)
                 # put on special line (rplanet is range from outer ring)
                 amin, bmin, cmin = 0, 0, 0
@@ -733,9 +740,10 @@ class MakeSvgInstance:
 
             scale = 1
             # output planet
+            # posiciona o planeta no ceu do mapa
             output = output + '<g transform="translate(-'+str(12*scale)+',-'+str(12*scale)+')"><g transform="scale('+str(scale)+')"><use x="' + str(
                 planet_x*(1/scale)) + '" y="' + str(planet_y*(1/scale)) + '" xlink:href="#' + self.planets_settings[i]['name'] + '" /></g></g>'
-
+            # import pdb; pdb.set_trace()
         # make transit degut and display planets
         if self.chart_type == "Transit" or self.chart_type == "Composite":
             group_offset = {}
@@ -1036,6 +1044,9 @@ class MakeSvgInstance:
     # Aspect and aspect grid functions for natal type charts.
 
     def __makeAspects(self, r, ar):
+        """Desenha linhas dos aspectos
+        240, 120
+        """
         out = ""
         for element in self.aspects_list:
             out += self.__drawAspect(r, ar, element['p1_abs_pos'], element['p2_abs_pos'],
@@ -1417,6 +1428,7 @@ class MakeSvgInstance:
                 str(r) + '" r="' + str(r-self.c3) + '"'
             td['c3style'] = 'fill: %s; fill-opacity:.8; stroke: %s; stroke-width: 1px' % (
                 self.colors_settings['paper_1'], self.colors_settings['zodiac_radix_ring_0'])
+            
             td['makeAspects'] = self.__makeAspects(r, (r-self.c3))
             td['makeAspectGrid'] = self.__makeAspectGrid(r)
             td['makePatterns'] = self.__makePatterns()

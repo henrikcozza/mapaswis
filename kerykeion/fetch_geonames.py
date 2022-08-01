@@ -68,7 +68,6 @@ class FetchGeonames:
         try:
             response = self.session.send(prepared_request)
             response_json = response.json()
-
         except Exception as e:
             self.__logger.error(f"Error fetching {self.timezone_url}: {e}")
             return {}

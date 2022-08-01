@@ -5,6 +5,7 @@
 # -*- coding: utf-8 -*-
 import os
 import math
+from pdb import Pdb
 import pytz
 import swisseph as swe
 
@@ -13,7 +14,7 @@ from datetime import datetime
 from logging import Logger, getLogger, basicConfig
 from kerykeion.fetch_geonames import FetchGeonames
 from kerykeion.types import KerykeionException, ZodiacType, KerykeionSubject, LunarPhaseObject
-from kerykeion.utilities import get_number_from_name, calculate_position
+from kerykeion.utilities import get_number_from_name, get_sign_from_number, calculate_position
 from pathlib import Path
 from typing import Union
 
@@ -148,8 +149,8 @@ class KrInstance():
                 "No data found for this city, try again! Maybe check your connection?")
 
         self.nation = self.city_data["countryCode"]
-        self.lng = float(self.city_data["lng"])
-        self.lat = float(self.city_data["lat"])
+        # self.lng = float(self.city_data["lng"])
+        # self.lat = float(self.city_data["lat"])
         self.tz_str = self.city_data["timezonestr"]
 
         if self.lat > 66.0:
@@ -161,7 +162,7 @@ class KrInstance():
             self.lat = -66.0
             self.__logger.info(
                 'Polar circle override for houses, using -66 degrees')
-
+        
         return self.tz_str
 
     def __get_utc(self):
@@ -171,7 +172,7 @@ class KrInstance():
             local_time = pytz.timezone(tz)
         else:
             local_time = pytz.timezone(self.tz_str)
-
+            
         naive_datetime = datetime(
             self.year,
             self.month,
@@ -256,12 +257,15 @@ class KrInstance():
             self.eleventh_house["position"],
             self.twelfth_house["position"]
         ]
-
+        #calcula os planetas previamente para auxiliar o calculo da roda da fortuna
+        
+        
         # return self.houses_list
         return houses_degree
 
     def __planets_degrees_lister(self):
         """Sidereal or tropic mode."""
+        # import pdb;pdb.set_trace()
         self.__iflag = swe.FLG_SWIEPH+swe.FLG_SPEED
 
         if self.zodiac_type == "Sidereal":
@@ -285,6 +289,9 @@ class KrInstance():
         true_node_deg = swe.calc(self.julian_day, 11, self.__iflag)[0][0]
         lilith_deg = swe.calc(self.julian_day, 12, self.__iflag)[0][0]
         chiron_deg = swe.calc(self.julian_day, 15, self.__iflag)[0][0]
+
+        fortune = 0.0
+        
         # print(swe.calc(self.julian_day, 7, self.__iflag)[3])
 
         self.planets_degrees = [
@@ -301,11 +308,87 @@ class KrInstance():
             mean_node_deg,
             true_node_deg,
             lilith_deg,
-            chiron_deg
+            chiron_deg,
+            fortune
         ]
 
         return self.planets_degrees
 
+    def __calc_planet_houses(self) -> None:
+        #calcula casas que, chama o calculo de planetas que chama o calculo da fortuna
+        self.__houses()
+        self.__planets()
+        self.__calc_fortune()  
+
+    def __calc_fortune(self) -> None:
+        """
+        Calcula roda da fortuna, signo e grau
+        
+        Nascimentos Diurnos: Roda da Fortuna = Ascendente + Lua – Sol
+        Nascimentos Noturnos: Roda da Fortuna = Ascendente + Sol – Lua
+
+        calcular distancias entre o signo de aries de cada nó,
+        e descobrir o signo em relaçao ao Aries
+        descobrir o grau da roda
+        """       
+        
+        #horario noturno das 18 as 6, diurno das 6 as 18
+        add_position = 0
+        # calculo noturno
+        if self.hour >= 18 and self.hour <= 6:
+            fortune_deg = self.first_house['position'] + self.sun['position'] - self.moon['position']
+            fortune_deg_bkp = fortune_deg
+            if fortune_deg > 30:
+                fortune_deg -=  30
+                add_position =1
+            elif fortune_deg < 0:
+                fortune_deg +=  30
+                add_position =-1
+            sign_position = self.first_house['sign_num'] + self.sun['sign_num'] - self.moon['sign_num'] 
+            sign_position += add_position
+        #calculo diurno
+        else:
+            fortune_deg = self.first_house['position'] + self.moon['position'] - self.sun['position'] 
+            fortune_deg_bkp = fortune_deg
+            if fortune_deg > 30:
+                fortune_deg -=  30
+                add_position =1
+            elif fortune_deg < 0:
+                fortune_deg +=  30
+                add_position =-1
+            sign_position = self.first_house['sign_num'] + self.moon['sign_num']  -self.sun['sign_num']
+            
+            sign_position += add_position
+        
+        abs_pos = (sign_position*30)+fortune_deg
+        if sign_position < 0:
+            sign_position += 12
+
+        self.fortune = {
+            'name': 'Lot of Fortune',            
+            'quality': get_sign_from_number(sign_position)[2],
+            'element': get_sign_from_number(sign_position)[1], 
+            'sign': get_sign_from_number(sign_position)[0], 
+            'sign_num': sign_position, 
+            'position': fortune_deg, 
+            'abs_pos': abs_pos, 
+            'emoji': '⊗', 
+            'point_type': 'Calc',
+            'retrograde':False
+        }
+        pos = abs_pos
+        
+        #fortune position in natal chart
+        if len(self.planets_degrees) == 15:
+            #insere roda na fortuna na posição 14
+            self.planets_degrees[14] = pos
+        elif len(self.planets_degrees) >= 15:
+            #garante posição 14 para roda da fortuna
+            aux_planets_degrees_start = self.planets_degrees[:13]
+            aux_planets_degrees_end = self.planets_degrees[13:]
+            self.planets_degrees = aux_planets_degrees_start + [pos] + aux_planets_degrees_end
+        # import pdb;pdb.set_trace()
+        
     def __planets(self) -> None:
         """ Defines body positon in signs and information and
          stores them in dictionaries """
@@ -354,13 +437,11 @@ class KrInstance():
         self.chiron = calculate_position(
             self.planets_degrees[13], "Chiron", point_type=point_type
         )
-
+        
     def __planets_in_houses(self):
         """Calculates the house of the planet and updates
         the planets dictionary."""
-        self.__planets()
-        self.__houses()
-
+        
         def for_every_planet(planet, planet_deg):
             """Function to do the calculation.
             Args: planet dictionary, planet degree"""
@@ -458,6 +539,7 @@ class KrInstance():
         self.chiron = for_every_planet(
             self.chiron, self.planets_degrees[13]
         )
+       
 
         planets_list = [
             self.sun,
@@ -473,7 +555,8 @@ class KrInstance():
             self.mean_node,
             self.true_node,
             self.lilith,
-            self.chiron
+            self.chiron,
+            self.fortune
         ]
 
         # Check in retrograde or not:
@@ -485,6 +568,8 @@ class KrInstance():
             else:
                 p['retrograde'] = False
             planets_ret.append(p)
+
+        # self.__calc_fortune()
 
     def __lunar_phase_calc(self) -> None:
         """ Function to calculate the lunar phase"""
@@ -557,9 +642,10 @@ class KrInstance():
 
     def __make_lists(self):
         """ Internal function to generate the lists"""
+
         self.planets_list = [self.sun, self.moon, self.mercury, self.venus,
                              self.mars, self.jupiter, self.saturn, self.uranus, self.neptune,
-                             self.pluto, self.mean_node, self.true_node, self.lilith, self.chiron]
+                             self.pluto, self.mean_node, self.true_node, self.lilith, self.chiron, self.fortune]
 
         self.houses_list = [self.first_house, self.second_house, self.third_house,
                             self.fourth_house, self.fifth_house, self.sixth_house, self.seventh_house,
@@ -568,7 +654,12 @@ class KrInstance():
 
     def __get_all(self):
         """ Gets all data from all the functions """
-
+        #generate data to houses and planets
+        # self.__planets()
+        # self.__houses()
+        # self.__calc_fortune()
+        #calcula todas as casas planetas e roda da fortuna
+        self.__calc_planet_houses()
         self.__planets_in_houses()
         self.__lunar_phase_calc()
         self.__make_lists()
