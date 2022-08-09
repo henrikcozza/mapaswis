@@ -50,7 +50,7 @@ class MakeSvgInstance:
 
         # Directories:
         DATADIR = Path(__file__).parent
-        self.homedir = Path.home()
+        self.homedir = '/tmp/chart/'
 
         if new_output_directory:
             self.output_directory = Path(new_output_directory)
