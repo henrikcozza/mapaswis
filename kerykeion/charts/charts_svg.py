@@ -1570,14 +1570,13 @@ class MakeSvgInstance:
 
         return template.replace("\"", "'")
 
-    def makeSVG(self):
+    def makeSVG(self,output_folder,output_filename, separation_signal='/'):
         """Prints out the SVG file in the specifide folder"""
 
         if not (self.template):
             self.template = self.makeTemplate()
-
-        self.chartname = self.output_directory / \
-            f'{self.name}{self.chart_type}Chart.svg'
+        
+        self.chartname = f'{output_folder}{separation_signal}{output_filename}.svg'
 
         with open(self.chartname, "w", encoding='utf-8', errors='ignore') as output_file:
             output_file.write(self.template)
