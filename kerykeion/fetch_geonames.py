@@ -35,7 +35,7 @@ class FetchGeonames:
     ):
 
         self.session = CachedSession(
-            cache_name='cache/kerykeion_geonames_cache',
+            cache_name='/tmp/cache/kerykeion_geonames_cache',
             backend='sqlite',
             expire_after=86400
         )
