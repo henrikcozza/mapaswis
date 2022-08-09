@@ -50,7 +50,7 @@ class MakeSvgInstance:
 
         # Directories:
         DATADIR = Path(__file__).parent
-        self.homedir = '/tmp/chart/'
+        self.homedir = Path.home()
 
         if new_output_directory:
             self.output_directory = Path(new_output_directory)
@@ -1570,7 +1570,7 @@ class MakeSvgInstance:
 
         return template.replace("\"", "'")
 
-    def makeSVG(self,output_folder,output_filename, separation_signal='/'):
+    def makeSVG(self,output_folder,output_filename, separation_signal='/', raw=False):
         """Prints out the SVG file in the specifide folder"""
 
         if not (self.template):
@@ -1578,11 +1578,15 @@ class MakeSvgInstance:
         
         self.chartname = f'{output_folder}{separation_signal}{output_filename}.svg'
 
+        if raw:
+            return self.template
+            
         with open(self.chartname, "w", encoding='utf-8', errors='ignore') as output_file:
             output_file.write(self.template)
 
         return print(f"SVG Generated Correctly in: {self.chartname}")
 
+        
 
 if __name__ == "__main__":
 
