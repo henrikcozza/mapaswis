@@ -1177,7 +1177,7 @@ class MakeSvgInstance:
         return out
 
     def __makePlanetGrid(self):
-        out = '<g transform="translate(500,-20)">'
+        out = '<g transform="translate(40,550)">'
 
         # loop over all planets
         li = 10
@@ -1269,7 +1269,7 @@ class MakeSvgInstance:
 
     def __makeHousesGrid(self):
 
-        out = '<g transform="translate(600,-20)">'
+        out = '<g transform="translate(130,550)">'
         li = 10
         for i in range(12):
             if i < 9:
@@ -1380,7 +1380,7 @@ class MakeSvgInstance:
         # Defoult:
         # viewbox = '0 0 772.2 546.0' #297mm * 2.6 + 210mm * 2.6
         if self.chart_type == "Natal":
-            viewbox = '0 0 772.2 546.0'  # 297mm * 2.6 + 210mm * 2.6
+            viewbox = '0 0 682.2 846.0'  # 297mm * 2.6 + 210mm * 2.6
         else:
             viewbox = '0 0 1000 546.0'
 
@@ -1570,20 +1570,23 @@ class MakeSvgInstance:
 
         return template.replace("\"", "'")
 
-    def makeSVG(self):
+    def makeSVG(self,output_folder,output_filename, separation_signal='/', raw=False):
         """Prints out the SVG file in the specifide folder"""
 
         if not (self.template):
             self.template = self.makeTemplate()
+        
+        self.chartname = f'{output_folder}{separation_signal}{output_filename}.svg'
 
-        self.chartname = self.output_directory / \
-            f'{self.name}{self.chart_type}Chart.svg'
-
+        if raw:
+            return self.template
+            
         with open(self.chartname, "w", encoding='utf-8', errors='ignore') as output_file:
             output_file.write(self.template)
 
         return print(f"SVG Generated Correctly in: {self.chartname}")
 
+        
 
 if __name__ == "__main__":
 
