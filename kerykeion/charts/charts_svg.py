@@ -1380,7 +1380,7 @@ class MakeSvgInstance:
         # Defoult:
         # viewbox = '0 0 772.2 546.0' #297mm * 2.6 + 210mm * 2.6
         if self.chart_type == "Natal":
-            viewbox = '0 0 682.2 846.0'  # 297mm * 2.6 + 210mm * 2.6
+            viewbox = '0 0 602.2 846.0'  # 297mm * 2.6 + 210mm * 2.6
         else:
             viewbox = '0 0 1000 546.0'
 
@@ -1515,7 +1515,7 @@ class MakeSvgInstance:
         else:
             td['stringLocation'] = self.location
 
-        td['stringDateTime'] = f'{self.user.year}-{self.user.month}-{self.user.day} {self.user.hour:02d}:{self.user.minute:02d}'
+        td['stringDateTime'] = f'{self.user.day}/{self.user.month}/{self.user.year} - {self.user.hour:02d}:{self.user.minute:02d}'
 
         if self.chart_type == "Composite":
             td['stringLat'] = f'{self.t_user.name}: '
