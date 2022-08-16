@@ -1183,7 +1183,7 @@ class MakeSvgInstance:
         li = 10
         offset = 0
 
-        out += '<g transform="translate(240, -15)">'
+        out += '<g transform="translate(40, -15)">'
         out += \
             f'<text text-anchor="end" style="fill:{self.colors_settings["paper_0"]}; font-size: 14px;">{self.language_settings["planets_and_house"]} {self.name}:</text>'
         out += '</g>'
