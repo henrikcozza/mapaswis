@@ -85,7 +85,7 @@ class KrInstance():
         lat: Union[int, float] = 0,
         tz_str: str = "",
         logger: Union[Logger, None] = None,
-        geonames_username: str = 'century.boy',
+        geonames_username: str = 'conza',
         zodiac_type: ZodiacType = "Tropic",
         ephemered_file_folder: str = 'default',
         online: bool = True,
