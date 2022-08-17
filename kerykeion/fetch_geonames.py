@@ -30,7 +30,7 @@ class FetchGeonames:
     def __init__(
         self, city_name: str,
         country_code: str,
-        username: str = "century.boy",
+        username: str = "conza",
         logger: Union[logging.Logger, None] = None
     ):
 
