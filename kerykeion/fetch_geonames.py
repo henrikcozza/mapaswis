@@ -41,7 +41,8 @@ class FetchGeonames:
         )
 
         self.username = username
-        self.city_name = city_name
+        #remove pontuações do nome da cidade para buscas
+        self.city_name = city_name.split('.')[0]
         self.country_code = country_code
         self.base_url = "http://api.geonames.org/searchJSON"
         self.timezone_url = "http://api.geonames.org/timezoneJSON"
